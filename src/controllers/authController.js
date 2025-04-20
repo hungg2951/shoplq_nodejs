@@ -41,6 +41,36 @@ const register = async (req, res) => {
   }
 };
 
+const reSendVerifyEmail = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const emailExists = await User.findOne({ email });
+    if (!emailExists) {
+      return res.status(400).json({ message: "Email Không tồn tại" });
+    }
+    if (emailExists.verificationCodeExpires > Date.now())
+      return res
+        .status(400)
+        .json({ message: "Mã cũ chưa hết hạn" });
+    const verificationCode = Math.floor(
+      100000 + Math.random() * 900000
+    ).toString();
+
+    const newCode = {
+      verificationCode,
+      verificationCodeExpires: Date.now() + 2 * 60 * 1000, // 2 phút
+    };
+    await User.findOneAndUpdate({ _id: emailExists._id }, newCode, {
+      new: true,
+    });
+    await sendVerificationEmail(email, verificationCode);
+    res.status(201).json({
+      message:
+        "Mã mới đã được gửi về Email, Vui lòng kiểm tra Email của bạn!"
+    });
+  } catch (error) {}
+};
+
 const verifyEmail = async (req, res) => {
   const { email, code } = req.body;
 
@@ -107,4 +137,4 @@ const getMe = async (req, res) => {
     res.status(500).json({ message: "Lỗi server" });
   }
 };
-module.exports = { login, register, getMe, verifyEmail };
+module.exports = { login, register, getMe, verifyEmail,reSendVerifyEmail };
