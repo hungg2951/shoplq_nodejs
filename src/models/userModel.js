@@ -1,4 +1,3 @@
-
 const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
 const userSchema = mongoose.Schema(
@@ -7,7 +6,7 @@ const userSchema = mongoose.Schema(
       required: true,
       type: String,
       unique: true,
-      trim:true,
+      trim: true,
       lowercase: true,
     },
     email: {
@@ -31,6 +30,7 @@ const userSchema = mongoose.Schema(
       enum: ["admin", "user"],
       default: "user",
     },
+    coin: { type: Number, default: 0 },
     status: {
       type: Boolean,
       default: true,

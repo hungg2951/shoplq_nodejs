@@ -39,9 +39,11 @@ const login = async (req, res) => {
     // Tìm người dùng theo username hoặc email
     const user = await User.findOne({
       $or: [{ username }, { email: username }],
-    });
+    }).select("+password");
     if (!user) {
-      return res.status(400).json({ message: "Tên người dùng hoặc email không tồn tại" });
+      return res
+        .status(400)
+        .json({ message: "Tên người dùng hoặc email không tồn tại" });
     }
 
     // So sánh mật khẩu
@@ -61,5 +63,14 @@ const login = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
-module.exports = { login, register };
+const getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId)
+    if (!user) return res.status(404).json({ message: 'User không tồn tại' });
+    res.json(user);
+  } catch (err) {
+    console.error('Lỗi lấy user:', err);
+    res.status(500).json({ message: 'Lỗi server' });
+  }
+};
+module.exports = { login, register, getMe };
