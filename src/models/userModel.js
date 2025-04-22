@@ -42,7 +42,7 @@ const userSchema = mongoose.Schema(
     verificationCode: Number,
     verificationCodeExpires: Date,
   },
-  { timestamp: true }
+  { timestamps: true }
 );
 // Tự động hash password nếu bị thay đổi
 userSchema.pre("save", async function (next) {

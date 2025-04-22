@@ -1,4 +1,4 @@
-const User = require('../models/userModel');
+const User = require("../models/userModel");
 
 // Get all users
 exports.getUsers = async (req, res) => {
@@ -14,8 +14,8 @@ exports.getUsers = async (req, res) => {
 exports.getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ message: 'User not found' });
-    res.json(user);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.status(200).json(user);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -24,12 +24,14 @@ exports.getUserById = async (req, res) => {
 // Update user
 exports.updateUser = async (req, res) => {
   try {
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+    if(req.username) return res.status(404).json({ message: "Không thể thay đổi tên tài khoản" });
+    if(req.email) return res.status(404).json({ message: "Không thể thay đổi email" });
+    const user = await User.findOneAndUpdate({ _id: req.body.id }, req.body, {
       new: true,
       runValidators: true,
     });
-    if (!user) return res.status(404).json({ message: 'User not found' });
-    res.json(user);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.status(200).json(user);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -39,8 +41,8 @@ exports.updateUser = async (req, res) => {
 exports.deleteUser = async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);
-    if (!user) return res.status(404).json({ message: 'User not found' });
-    res.json({ message: 'User deleted successfully' });
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json({ message: "User deleted successfully" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
