@@ -13,13 +13,11 @@ exports.getAllAccounts = async (req, res) => {
 };
 
 exports.getLoginInfoById = async (req, res) => {
-  console.log(req.params);
-  
+
   try {
     const { code } = req.params;
 
-    const account = await Account.findOne({ code })
-      .populate("loginInfo");
+    const account = await Account.findOne({ code }).populate("loginInfo");
 
     if (!account || !account.loginInfo) {
       return res
@@ -45,7 +43,7 @@ exports.updateLoginInfo = async (req, res) => {
     const { username, plainPassword, type } = req.body;
 
     // Tìm acc theo code
-    const account = await Account.findOne({ _id:id }).populate("loginInfo");
+    const account = await Account.findOne({ _id: id }).populate("loginInfo");
     if (!account) {
       return res.status(404).json({ message: "Không tìm thấy tài khoản!" });
     }

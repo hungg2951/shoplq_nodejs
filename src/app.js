@@ -6,6 +6,7 @@ const authRoutes = require("./routes/authRoute");
 const userRoutes = require('./routes/userRoute');
 const accountRoutes = require('./routes/accountRoute');
 const infoLoginAccRoutes = require('./routes/infoLoginAcc');
+const orderRoutes = require('./routes/orderRoute');
 
 const app = express();
 const PORT = process.env.PORT || 8000
@@ -17,6 +18,7 @@ app.use("/api", authRoutes);
 app.use('/api', userRoutes);
 app.use('/api', accountRoutes);
 app.use('/api', infoLoginAccRoutes);
+app.use('/api', orderRoutes);
 // MongoDB connect
 mongoose.connect(process.env.MONGODB_URI)
 .then(() => console.log('MongoDB connected'))

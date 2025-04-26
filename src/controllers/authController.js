@@ -131,7 +131,7 @@ const getMe = async (req, res) => {
   try {
     const user = await User.findById(req.user.userId);
     if (!user) return res.status(404).json({ message: "User không tồn tại" });
-    res.json(user);
+    res.status(200).json(user);
   } catch (err) {
     console.error("Lỗi lấy user:", err);
     res.status(500).json({ message: "Lỗi server" });
